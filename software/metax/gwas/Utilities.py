@@ -11,17 +11,17 @@ from .. import Utilities as BUtilities
 
 def add_gwas_arguments_to_parser(parser):
     parser.add_argument("--snp_column", help="Name of -snp column- in GWAS input file", default="SNP")
-    parser.add_argument("--effect_allele_column", help="Name of -effect allele column- in GWAS input file", default="A1")
-    parser.add_argument("--non_effect_allele_column", help="Name of -non effect allele column- in GWAS input file", default="A2")
-    parser.add_argument("--chromosome_column", help="Name of -chromosome column- in GWAS input file")
-    parser.add_argument("--position_column", help="Name of -base position column- in GWAS input file")
+    parser.add_argument("--effect_allele_column", help="Name of -effect allele column- in GWAS input file", default="ALLELE0")
+    parser.add_argument("--non_effect_allele_column", help="Name of -non effect allele column- in GWAS input file", default="ALLELE1")
+    parser.add_argument("--chromosome_column", help="Name of -chromosome column- in GWAS input file", default="CHROM")
+    parser.add_argument("--position_column", help="Name of -base position column- in GWAS input file", default="GENPOS")
     parser.add_argument("--freq_column", help="Name of -frequency column- in GWAS input file")
-    parser.add_argument("--beta_column", help="Name of snp association's -beta column- in GWAS input file")
+    parser.add_argument("--beta_column", help="Name of snp association's -beta column- in GWAS input file", default="BETA")
     parser.add_argument("--beta_sign_column", help="Name of snp association's -sign of beta column- in GWAS input file")
     parser.add_argument("--or_column", help="Name of snp association's -odds ratio column- in GWAS input file")
-    parser.add_argument("--se_column", help="Name of snp association's -beta standard error- column in GWAS input file")
-    parser.add_argument("--zscore_column", help="Name of snp association's -Z-Score ratio column- in GWAS input file")
-    parser.add_argument("--pvalue_column", help="Name of snp association's -p-value column- in GWAS input file")
+    parser.add_argument("--se_column", help="Name of snp association's -beta standard error- column in GWAS input file", default="SE")
+    parser.add_argument("--zscore_column", help="Name of snp association's -Z-Score ratio column- in GWAS input file", default="ZSCORE")
+    parser.add_argument("--pvalue_column", help="Name of snp association's -p-value column- in GWAS input file", default="PVAL")
     parser.add_argument("--separator", help="Character or string separating fields in input file. Defaults to any whitespace.")
 
     parser.add_argument("--skip_until_header",
@@ -89,11 +89,11 @@ def gwas_from_data(data, extra_columns=None):
     else:
         rsid, chromosome, position, non_effect_allele, effect_allele, zscore = [], [], [], [], [], []
 
-    g = pandas.DataFrame({Constants.SNP:numpy.array(rsid, dtype=numpy.str),
-                        Constants.CHROMOSOME:numpy.array(chromosome, dtype=numpy.str),
+    g = pandas.DataFrame({Constants.SNP:numpy.array(rsid, dtype=str),
+                        Constants.CHROMOSOME:numpy.array(chromosome, dtype=str),
                         Constants.POSITION:numpy.array(position),
-                        Constants.EFFECT_ALLELE:numpy.array(effect_allele, dtype=numpy.str),
-                        Constants.NON_EFFECT_ALLELE:numpy.array(non_effect_allele, dtype=numpy.str),
+                        Constants.EFFECT_ALLELE:numpy.array(effect_allele, dtype=str),
+                        Constants.NON_EFFECT_ALLELE:numpy.array(non_effect_allele, dtype=str),
                         Constants.ZSCORE:numpy.array(zscore)})
     if len(data) and extra_columns:
         for k,i in extra_columns:

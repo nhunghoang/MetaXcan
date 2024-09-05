@@ -101,10 +101,10 @@ def _design_matrices(e_,  context):
 def _results(result, context):
     idx = 1
 
-    effect = result.params[idx]
-    se = result.bse[idx]
-    zscore = result.tvalues[idx]
-    pvalue = result.pvalues[idx]
+    effect = result.params.iloc[idx]
+    se = result.bse.iloc[idx]
+    zscore = result.tvalues.iloc[idx]
+    pvalue = result.pvalues.iloc[idx]
 
     return effect, se, zscore, pvalue
 

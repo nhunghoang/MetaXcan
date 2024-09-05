@@ -78,7 +78,7 @@ def load_samples(args):
     s = None
     if args.text_sample_ids:
         if len(args.text_sample_ids) == 1:
-            s = pandas.read_table(args.text_sample_ids[0], header=None, names=["FID", "IID"])
+            s = pandas.read_table(args.text_sample_ids[0], sep=' ', header=None, names=["FID", "IID"])
         elif args.text_sample_ids[1] == "UKB":
             k = pandas.read_table(args.text_sample_ids[0], sep=" ")
             k = k[k.sex != "D"].reset_index(drop=True)

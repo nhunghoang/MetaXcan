@@ -36,6 +36,10 @@ def run(args, prediction_results = None):
             reporter.update(i, "%d %% of model's genes processed so far")
         reporter.update(i, "%d %% of model's genes processed so far")
         results = PA.dataframe_from_results(results)
+
+        results['gene'] = results['gene'].astype(str)
+        results = results.loc[~results['pvalue'].isna()]
+
         results = results.sort_values(by="pvalue")
         results = results.fillna("NA")
 
