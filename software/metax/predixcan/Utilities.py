@@ -168,7 +168,7 @@ def expression_from_args(args, prediction_results = None):
         else:
             raise Exceptions.ReportableException("Invalid prediction results")
     elif args.hdf5_expression_file:
-        logging.info("Preparing PrediXcan HDF5 context")
+        #logging.info("Preparing PrediXcan HDF5 context")
         expression = HDF5Expression.Expression(args.hdf5_expression_file)
     elif args.expression_file:
         logging.info("Preparing PrediXcan context")
@@ -186,7 +186,7 @@ def p_context_from_args(args, prediction_results=None):
 ########################################################################################################################
 
 def _prepare_phenotype(context):
-    logging.info("Accquiring phenotype")
+    #logging.info("Accquiring phenotype")
     context.pheno = _pheno_from_file_and_column(context.args.input_phenos_file, context.args.input_phenos_column, context.args.input_phenos_na_values)
     if context.args.mode == MTPMode.K_LOGISTIC:
         try:
@@ -199,9 +199,9 @@ def _prepare_phenotype(context):
     context.mode = context.args.mode
     if context.args.covariates_file and context.args.covariates:
         context.mode = MTPMode.K_LINEAR
-        logging.info("Acquiring covariates")
+        #logging.info("Acquiring covariates")
         context.covariates = _get_covariates(context.args)
-        logging.info("Replacing phenotype with residuals")
+        #logging.info("Replacing phenotype with residuals")
         context.pheno = _get_residual(context.pheno, context.covariates)
 
 def _pheno_from_file_and_column(path, column, na_rep=None):

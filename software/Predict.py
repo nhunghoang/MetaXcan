@@ -20,7 +20,7 @@ GF = Genotype.GF
 
 def dosage_generator(args, variant_mapping=None, weights=None):
     if args.liftover:
-        logging.info("Acquiring liftover conversion")
+        #logging.info("Acquiring liftover conversion")
         liftover_chain = pyliftover.LiftOver(args.liftover)
         liftover_conversion = lambda chr,pos: Genomics.lift(liftover_chain, chr, pos, args.zero_based_positions)
     else:
@@ -29,10 +29,10 @@ def dosage_generator(args, variant_mapping=None, weights=None):
 
     whitelist = None
     if variant_mapping and type(variant_mapping) == dict:
-        logging.info("Setting whitelist from mapping keys")
+        #logging.info("Setting whitelist from mapping keys")
         whitelist = set(variant_mapping.keys())
     else:
-        logging.info("Setting whitelist from available models")
+        #logging.info("Setting whitelist from available models")
         whitelist = set(weights.rsid)
 
     d = None
@@ -59,7 +59,7 @@ def model_structure(args):
     m = {}
     weights, extra = model.weights, model.extra
     if args.sub_batches is not None and args.sub_batch is not None:
-        logging.info("slicing models")
+        #logging.info("slicing models")
         extra = Utilities.sub_batch(extra, args.sub_batches, args.sub_batch)
         weights = weights[weights.gene.isin(extra.gene)].reset_index(drop = True)
 
@@ -103,7 +103,7 @@ def get_variant_mapping(args, weights):
 
     if len(args.variant_mapping):
         if len(args.variant_mapping) == 3:
-            logging.info("Acquiring variant mapping")
+            #logging.info("Acquiring variant mapping")
             mapping = KeyedDataSource.load_data(args.variant_mapping[0], args.variant_mapping[1], args.variant_mapping[2], value_white_list=set(weights.rsid))
             # if args.variant_mapping[1] == "UKB":
             #     mapping = KeyedDataSource.load_data(args.variant_mapping[0], "variant", "panel_variant_id", value_white_list=set(weights.rsid))
@@ -117,7 +117,7 @@ def get_variant_mapping(args, weights):
         checklist = set(weights.rsid)
 
     if len(args.on_the_fly_mapping) > 0:
-        logging.info("Acquiring on-the-fly mapping")
+        #logging.info("Acquiring on-the-fly mapping")
         if args.on_the_fly_mapping[0] == "METADATA":
             if mapping:
                 _mapping = mapping # Python scope subtlety, they are not blocks like swift
@@ -129,7 +129,7 @@ def get_variant_mapping(args, weights):
     return mapping
 
 def prepare_prediction(args, extra, samples):
-    logging.info("Preparing prediction")
+    #logging.info("Preparing prediction")
     results = None
     if len(args.prediction_output) < 2:
         from metax.predixcan.Utilities import BasicPredictionRepository
@@ -156,18 +156,18 @@ def run(args):
             return
         Utilities.ensure_requisite_folders(args.prediction_output[0])
 
-    logging.info("Loading samples")
+    #logging.info("Loading samples")
     samples = load_samples(args)
 
-    logging.info("Loading model")
+    #logging.info("Loading model")
     model, weights, extra = model_structure(args)
 
     variant_mapping = get_variant_mapping(args, weights)
 
-    logging.info("Preparing genotype dosages")
+    #logging.info("Preparing genotype dosages")
     dosage_source = dosage_generator(args, variant_mapping, weights)
 
-    logging.info("Processing genotypes")
+    #logging.info("Processing genotypes")
     dcapture = []
     reporter = Utilities.PercentReporter(logging.INFO, len(set(weights.rsid.values)))
     snps_found = set()
@@ -180,7 +180,7 @@ def run(args):
                 break
             var_id = e[GF.RSID]
 
-            logging.log(8, "variant %i:%s", i, var_id)
+            #logging.log(8, "variant %i:%s", i, var_id)
             if var_id in model:
                 s = model[var_id]
                 ref_allele, alt_allele = e[GF.REF_ALLELE], e[GF.ALT_ALLELE]
@@ -206,7 +206,7 @@ def run(args):
     reporter.update(len(snps_found), "%d %% of models' snps used", force=True)
      
     if args.capture:
-        logging.info("Saving data capture")
+        #logging.info("Saving data capture")
         Utilities.ensure_requisite_folders(args.capture)
         with gzip.open(args.capture, "w") as f:
             header = "gene\tweight\tvariant_id\tref_allele\teff_allele\ta0\ta1\tstrand_align\tallele_align\t" + "\t".join(samples.IID.values) + "\n"
@@ -216,16 +216,17 @@ def run(args):
                 f.write(l.encode())
 
     if args.prediction_output and len(args.prediction_output) < 2:
-        logging.info("Storing prediction")
+        #logging.info("Storing prediction")
         results.store_prediction()
 
     if args.prediction_summary_output:
-        logging.info("Saving summary")
+        #logging.info("Saving summary")
         summary = results.summary()
         Utilities.save_dataframe(summary, args.prediction_summary_output)
 
     end = timer()
-    logging.info("Successfully predicted expression in %s seconds"%(str(end-start)))
+    tpass = round(end-start, 3)
+    logging.info("Successfully predicted expression in %s seconds"%(str(tpass)))
 
     return results
 

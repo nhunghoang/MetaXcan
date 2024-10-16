@@ -2,11 +2,13 @@ import os
 import re
 import numpy
 import logging
+
+logging.getLogger('h5py').setLevel(logging.WARNING)
 import h5py
-try:
-    import h5py_cache
-except:
-    logging.info("Couldn't import h5py_cache. Anyway, this dependency should be removed. It has been folded into h5py")
+#try:
+#    import h5py_cache
+#except:
+#    logging.info("Couldn't import h5py_cache. Anyway, this dependency should be removed. It has been folded into h5py")
 
 from . import Expression as _Expression
 
@@ -154,7 +156,7 @@ def _code_999_b(k):
     return  k
 
 def _structure_file(file_path):
-    logging.info("Acquiring HDF5 expression cache")
+    #logging.info("Acquiring HDF5 expression cache")
     file = h5py.File(file_path, 'r')
     genes = [g for g in file['genes']]
     h5 = file['pred_expr']
